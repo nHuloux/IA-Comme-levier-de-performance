@@ -5,22 +5,6 @@ import { GoogleGenAI, Type } from "@google/genai";
 
 // Data from the provided JS code as fallback
 const staticPrompts: PromptExercise[] = [ // J'inclus ici une sélection de prompts pour que le code soit fonctionnel
-            // Ces prompts sont trop vagues, incomplets ou ambigus. La plupart n'ont pas de solution analysable.
-    {
-        text: "Économie.",
-        quality: "Médiocre",
-        solution: { "highlight-1": ["Économie."], "highlight-2": [], "highlight-3": [], "highlight-4": [], "highlight-5": [] }
-    },
-    { text: "Fais un résumé.", quality: "Médiocre", solution: { "highlight-3": ["Fais"], "highlight-4": ["un résumé."], "highlight-1": [], "highlight-2": [], "highlight-5": [] }},
-    { text: "Pourquoi ?", quality: "Médiocre", solution: null },
-    { text: "Continue.", quality: "Médiocre", solution: { "highlight-3": ["Continue."], "highlight-1": [], "highlight-2": [], "highlight-4": [], "highlight-5": [] }},
-    { text: "image", quality: "Médiocre", solution: null },
-    { text: "Explique.", quality: "Médiocre", solution: { "highlight-3": ["Explique."], "highlight-1": [], "highlight-2": [], "highlight-4": [], "highlight-5": [] }},
-    { text: "Liste.", quality: "Médiocre", solution: { "highlight-3": ["Liste."], "highlight-1": [], "highlight-2": [], "highlight-4": [], "highlight-5": [] }},
-    { text: "Je ne suis pas d'accord.", quality: "Médiocre", solution: null },
-    { text: "Plus de détails.", quality: "Médiocre", solution: null },
-    { text: "C'est faux.", quality: "Médiocre", solution: null },
-
 
     // --- GROUPE 2 : PROMPTS DE QUALITÉ MOYENNE ---
     // Ces prompts sont fonctionnels mais manquent d'éléments clés (Rôle, Ton, Format précis) pour un résultat optimal.

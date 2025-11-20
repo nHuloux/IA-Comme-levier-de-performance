@@ -96,12 +96,7 @@ const App: React.FC = () => {
           ))}
         </nav>
 
-        <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-slate-800">
-          <div className="text-xs text-slate-500">
-            <p>Récapitulatif de formation</p>
-            <p className="mt-1">© 2024 Aflokkat</p>
-          </div>
-        </div>
+        
       </aside>
 
       {/* Main Content */}
