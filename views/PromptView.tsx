@@ -380,18 +380,49 @@ const PromptView: React.FC = () => {
     let solvedHtml = currentPrompt.text;
     const solution = currentPrompt.solution;
 
-    // Sort keys to handle potential overlaps nicely (though regex replace is sequential)
-    for (const [cls, phrases] of Object.entries(solution)) {
-      if (!phrases) continue;
-      (phrases as string[]).forEach(phrase => {
-         if (!phrase) return;
-         // Escape regex special chars
-         const escapedPhrase = phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-         // Use word boundary check or just replacement? Simple replacement is safer for partial matches in sentences
-         const regex = new RegExp(escapedPhrase, 'g');
-         solvedHtml = solvedHtml.replace(regex, `<span class="${cls}">${phrase}</span>`);
-      });
-    }
+    // Support both new keys (highlight-context/role/...) and legacy numeric keys (highlight-1..highlight-5)
+    const keyMapping: Record<string, string> = {
+      'highlight-1': 'highlight-context',
+      'highlight-2': 'highlight-role',
+      'highlight-3': 'highlight-action',
+      'highlight-4': 'highlight-format',
+      'highlight-5': 'highlight-tone',
+      'highlight-context': 'highlight-context',
+      'highlight-role': 'highlight-role',
+      'highlight-action': 'highlight-action',
+      'highlight-format': 'highlight-format',
+      'highlight-tone': 'highlight-tone'
+    };
+
+    // Tailwind classes to make highlights visible when inserted as spans
+    const highlightClasses: Record<string, string> = {
+      'highlight-context': 'bg-yellow-100 ring-1 ring-yellow-300 px-1 rounded',
+      'highlight-role': 'bg-green-100 ring-1 ring-green-300 px-1 rounded',
+      'highlight-action': 'bg-blue-100 ring-1 ring-blue-300 px-1 rounded',
+      'highlight-format': 'bg-red-100 ring-1 ring-red-300 px-1 rounded',
+      'highlight-tone': 'bg-purple-100 ring-1 ring-purple-300 px-1 rounded'
+    };
+
+    // Sort keys to handle potential overlaps nicely (longer phrases first)
+    const entries: Array<[string, string[]]> = Object.entries(solution).map(([k, v]) => [keyMapping[k] || k, v as string[]]);
+    // Flatten phrases with their mapped class
+    const flat: Array<{ cls: string; phrase: string }> = [];
+    entries.forEach(([cls, phrases]) => {
+      if (!phrases) return;
+      (phrases as string[]).forEach(p => { if (p) flat.push({ cls, phrase: p }); });
+    });
+    // Sort by phrase length desc to avoid partial overlaps
+    flat.sort((a, b) => b.phrase.length - a.phrase.length);
+
+    flat.forEach(({ cls, phrase }) => {
+      if (!phrase) return;
+      const mapped = keyMapping[cls] || cls;
+      const css = highlightClasses[mapped] || '';
+      // Escape regex special chars
+      const escapedPhrase = phrase.replace(/[.*+?^${}()|[\\]\\]/g, '\\\\$&');
+      const regex = new RegExp(escapedPhrase, 'g');
+      solvedHtml = solvedHtml.replace(regex, `<span class="${mapped} ${css}">${phrase}</span>`);
+    });
     setHtmlContent(solvedHtml);
     setShowSolution(true);
   };
